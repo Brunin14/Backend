@@ -64,9 +64,15 @@ def login():
         return jsonify({'mensagem': f'Bem-vindo, {usuario[0]}!'})
     return jsonify({'erro': 'Login inválido'}), 401
 
-@app.route('/')
-def home():
-    return '🚀 API Flask rodando com sucesso!'
+@app.route('/api/usuarios', methods=['GET'])
+def listar_usuarios():
+    con = conectar()
+    cur = con.cursor()
+    cur.execute("SELECT id, nome, email FROM usuarios")
+    usuarios = cur.fetchall()
+    con.close()
+    lista = [{'id': u[0], 'nome': u[1], 'email': u[2]} for u in usuarios]
+    return jsonify(lista)
 
 # Executa na porta 10000 para a Render
 if __name__ == '__main__':
